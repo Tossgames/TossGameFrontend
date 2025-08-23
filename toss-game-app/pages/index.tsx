@@ -10,7 +10,7 @@ export const Route = BedrockRoute('/', {
 export function Index() {
   return (
     <View>
-      <Text>Hello Index</Text>
+      <Text>Hello nowax</Text>
     </View>
   );
 }
