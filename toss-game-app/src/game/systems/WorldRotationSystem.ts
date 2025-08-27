@@ -5,6 +5,7 @@ export class WorldRotationSystem {
   private isRotating = false;
   private rotationStartTime = 0;
   private onRotationCompleteCallback?: () => void;
+  private onWorldUpdateCallback?: (world: GameWorld) => void;
 
   rotateWorld(world: GameWorld, direction: 'clockwise' | 'counterclockwise'): void {
     if (this.isRotating) return;
@@ -41,6 +42,9 @@ export class WorldRotationSystem {
       world.rotation = fromRotation + (toRotation - fromRotation) * easeProgress;
       world.gravityDirection = GRAVITY_DIRECTIONS[toRotation as keyof typeof GRAVITY_DIRECTIONS];
 
+      // Notify external systems (like React) about the world update
+      this.onWorldUpdateCallback?.(world);
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
@@ -54,6 +58,10 @@ export class WorldRotationSystem {
 
   onRotationComplete(callback: () => void): void {
     this.onRotationCompleteCallback = callback;
+  }
+
+  onWorldUpdate(callback: (world: GameWorld) => void): void {
+    this.onWorldUpdateCallback = callback;
   }
 
   isCurrentlyRotating(): boolean {

@@ -43,6 +43,11 @@ export function Index() {
       setPlayer({...updatedPlayer});
     });
 
+    // Set up WorldRotationSystem callback for smooth animations
+    rotationSystem.onWorldUpdate((updatedWorld) => {
+      setGameWorld({...updatedWorld});
+    });
+
     touchManager.onJump(() => {
       let actionTaken = false;
       
