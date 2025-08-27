@@ -53,7 +53,9 @@ export class PhysicsEngine {
   checkCollision(player: Player, world: GameWorld): void {
     const gravity = world.gravityDirection;
     const worldSize = GAME_CONFIG.WORLD_SIZE;
-    
+
+    player.isGrounded = false; // Assume not grounded initially
+
     // Check collision based on gravity direction
     if (gravity.y < 0) {
       // Normal gravity (down)
@@ -61,8 +63,6 @@ export class PhysicsEngine {
         player.position.y = 0;
         player.velocity.y = Math.max(0, player.velocity.y);
         player.isGrounded = true;
-      } else {
-        player.isGrounded = false;
       }
     } else if (gravity.y > 0) {
       // Inverted gravity (up)
@@ -70,8 +70,6 @@ export class PhysicsEngine {
         player.position.y = worldSize;
         player.velocity.y = Math.min(0, player.velocity.y);
         player.isGrounded = true;
-      } else {
-        player.isGrounded = false;
       }
     } else if (gravity.x < 0) {
       // Left wall gravity
@@ -79,8 +77,6 @@ export class PhysicsEngine {
         player.position.x = 0;
         player.velocity.x = Math.max(0, player.velocity.x);
         player.isGrounded = true;
-      } else {
-        player.isGrounded = false;
       }
     } else if (gravity.x > 0) {
       // Right wall gravity
@@ -88,8 +84,6 @@ export class PhysicsEngine {
         player.position.x = worldSize;
         player.velocity.x = Math.min(0, player.velocity.x);
         player.isGrounded = true;
-      } else {
-        player.isGrounded = false;
       }
     }
   }
