@@ -65,10 +65,6 @@ export function Index() {
       }
     });
 
-    touchManager.onDoubleJump(() => {
-      // Keep this for potential future use (like triple jump)
-      addLog('Double tap detected - no action');
-    });
   }, [player, gameWorld]);
 
   const addLog = (message: string) => {
