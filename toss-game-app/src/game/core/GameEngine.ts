@@ -1,5 +1,6 @@
 import { GameState, Player, GameWorld } from '../../types';
 import { PhysicsEngine } from '../physics/PhysicsEngine';
+import { GAME_CONFIG } from '../../constants';
 
 export class GameEngine {
   private gameState: GameState = 'menu';
@@ -71,13 +72,34 @@ export class GameEngine {
   private update(deltaTime: number) {
     if (!this.player || !this.gameWorld) return;
 
-    // Apply physics
+    // 물리 계산
     this.physicsEngine.applyGravity(this.player, this.gameWorld, deltaTime);
     this.physicsEngine.updatePosition(this.player, deltaTime);
-    this.physicsEngine.checkCollision(this.player, this.gameWorld);
+    this.physicsEngine.checkGroundCollision(this.player, this.gameWorld);
 
-    // Notify React component about player updates
+    // 플레이어 상태 업데이트를 React 컴포넌트에 알림
     this.onPlayerUpdate?.(this.player);
+  }
+
+  gravitySwitch() {
+    if (this.player && this.player.isGrounded && this.gameWorld) {
+      // 1. 플레이어의 위/아래 상태를 전환
+      this.player.isOnTop = !this.player.isOnTop;
+
+      // 2. 상태에 따라 중력 방향을 설정
+      this.gameWorld.gravityDirection.y = this.player.isOnTop ? 1 : -1;
+
+      // 3. 상태에 따라 플레이어 위치를 반대편으로 즉시 이동
+      const playerSize = GAME_CONFIG.PLAYER_SIZE;
+      if (this.player.isOnTop) {
+        this.player.position.y = this.gameWorld.centerLineY - playerSize;
+      } else {
+        this.player.position.y = this.gameWorld.centerLineY;
+      }
+
+      // 4. 이동 후 속도 초기화
+      this.player.velocity.y = 0;
+    }
   }
 
   private render() {
